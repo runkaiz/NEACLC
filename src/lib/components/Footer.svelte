@@ -8,23 +8,29 @@
             </div>
 
             <div class="px-5 py-2">
-                <a href="#" class="text-base text-gray-400 hover:text-gray-300"> Calendar </a>
+                <a href="/calendar" class="text-base text-gray-400 hover:text-gray-300">
+                    Calendar
+                </a>
             </div>
 
             <div class="px-5 py-2">
-                <a href="#" class="text-base text-gray-400 hover:text-gray-300"> Jobs </a>
+                <a href="/faqs" class="text-base text-gray-400 hover:text-gray-300"> FAQs </a>
             </div>
 
             <div class="px-5 py-2">
-                <a href="#" class="text-base text-gray-400 hover:text-gray-300"> Press </a>
+                <a href="/contact" class="text-base text-gray-400 hover:text-gray-300">
+                    Contact us
+                </a>
             </div>
 
             <div class="px-5 py-2">
-                <a href="#" class="text-base text-gray-400 hover:text-gray-300"> Accessibility </a>
+                <a href="/#mission" class="text-base text-gray-400 hover:text-gray-300">
+                    Mission
+                </a>
             </div>
 
             <div class="px-5 py-2">
-                <a href="#" class="text-base text-gray-400 hover:text-gray-300"> Partners </a>
+                <a href="/flyers" class="text-base text-gray-400 hover:text-gray-300"> Flyers </a>
             </div>
         </nav>
         <div class="mt-8 flex justify-center space-x-6">
