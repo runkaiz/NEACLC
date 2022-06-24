@@ -1,23 +1,33 @@
 import * as cookie from 'cookie';
+import { verifyToken } from '$lib/utils/token';
 
 /** @type {import('@sveltejs/kit').Handle} */
-export const handle = async ({ event, resolve }) => {
-  const cookies = cookie.parse(event.request.headers.get('cookie') || '');
-  event.locals.userid = cookies['userid'] || crypto.randomUUID();
+export async function handle({ event, resolve }) {
+	const cookies = cookie.parse(event.request.headers.get('cookie') || '');
+	const token = cookies.token;
 
-  const response = await resolve(event);
+	if (token) {
+		const payload = verifyToken(token);
+		if (payload) {
+			event.locals.user = payload;
+			const response = await resolve(event);
 
-  if (!cookies['userid']) {
-    // if this is the first time the user has visited this app,
-    // set a cookie so that we recognise them when they return
-    response.headers.set(
-      'set-cookie',
-      cookie.serialize('userid', event.locals.userid, {
-        path: '/',
-        httpOnly: true
-      })
-    );
-  }
+			return response;
+		} else {
+			// Remove token from the cookie, so future requests won't go through verification again.
+			const response = await resolve(event);
+			response.headers = { 'Set-Cookie': 'token=; Max-Age=0; HttpOnly; Path=/' };
+			return response;
+		}
+	}
 
-  return response;
-};
+	return resolve(event);
+}
+
+export async function getSession(event) {
+	const user = event.locals.user;
+
+	return {
+		user: user ? user : null
+	};
+}

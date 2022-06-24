@@ -1,6 +1,37 @@
+<script context="module">
+	export async function load({ fetch }) {
+		const url = `/announcement/get.json`;
+		const res = await fetch(url);
+
+		if (res.ok) {
+			return {
+				props: {
+					announcement: await res.json()
+				}
+			};
+		}
+
+		return {
+			status: res.status,
+			error: new Error(`Failed to load ${url}`)
+		};
+	}
+</script>
+
 <script>
     import cong from '$lib/assets/cong.jpg';
     import team from '$lib/assets/team.jpg';
+    import Announcement from '$lib/components/Announcement.svelte';
+    import { onMount } from 'svelte';
+
+    export let announcement;
+    let shouldShowAnnouncement = false;
+    
+    onMount(async function () {
+        if (announcement[0].content.trim() !== '') {
+            shouldShowAnnouncement = true;
+        }
+    });
 </script>
 
 <main>
@@ -97,7 +128,7 @@
                     <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                         <div class="rounded-md shadow">
                             <a
-                                href="#"
+                                href="/"
                                 class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 md:py-4 md:text-lg md:px-10"
                             >
                                 Register
@@ -105,7 +136,7 @@
                         </div>
                         <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
                             <a
-                                href="#"
+                                href="/"
                                 class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-rose-600 bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10"
                             >
                                 Contact
@@ -392,3 +423,6 @@
         </div>
     </div> -->
 </main>
+{#if shouldShowAnnouncement}
+    <Announcement message={announcement[0].content.trim()} />
+{/if}

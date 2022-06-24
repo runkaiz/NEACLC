@@ -1,27 +1,42 @@
-<!--
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
-<!--
-  This example requires updating your template:
+<script>
+	import { session } from '$app/stores';
+	import { goto } from '$app/navigation';
+    import { onMount } from 'svelte'
 
-  ```
-  <html class="h-full bg-gray-50">
-  <body class="h-full">
-  ```
--->
+    onMount(async function () {
+		if ($session.user) {
+            goto(`/`);
+        }
+	});
+
+	async function login(event) {
+		const form = event.target;
+		const auth = new FormData(form);
+		await fetch('/auth/login.json', {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: auth.get('email'),
+				password: auth.get('password'),
+				remember: auth.get('remember-me') === 'on'
+			})
+		}).then((response) => {
+			response.json().then((data) => {
+				if (!data.error) {
+					$session.user = data.user;
+                    goto(`/`);
+				} else {
+					// TODO: Handle error in UI
+                    console.log(data.error);
+				}
+			});
+		});
+	}
+</script>
+
 <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <svg
@@ -42,7 +57,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form class="space-y-6" action="#" method="POST">
+            <form class="space-y-6" on:submit|preventDefault={login}>
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">
                         Email address

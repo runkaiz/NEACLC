@@ -1,5 +1,20 @@
 <script>
     let mobileOpen = false;
+    import { session } from '$app/stores';
+	import { goto } from '$app/navigation';
+
+    async function logout() {
+        const url = `/auth/logout.json`;
+        const res = await fetch(url, {
+            credentials: 'same-origin',
+            method: 'POST'
+        });
+
+        if (res.ok) {
+            $session.user = null;
+            goto('/');
+        }
+    }
 </script>
 
 <div class="relative pt-6">
@@ -63,19 +78,38 @@
                 >
 
                 <a href="/payment" class="font-medium text-gray-500 hover:text-gray-900">Payment</a>
+
+                {#if $session.user}
+                    <a href="/console" class="font-medium text-gray-500 hover:text-gray-900">Console</a>
+                {/if}
             </div>
-            <div
-                class="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0"
-            >
-                <span class="inline-flex rounded-md shadow">
-                    <a
-                        href="/login"
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-rose-600 bg-white hover:bg-gray-50"
-                    >
-                        Log in
-                    </a>
-                </span>
-            </div>
+            {#if !$session.user}
+                <div
+                    class="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0"
+                >
+                    <span class="inline-flex rounded-md shadow">
+                        <a
+                            href="/login"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-rose-600 bg-white hover:bg-gray-50"
+                        >
+                            Log in
+                        </a>
+                    </span>
+                </div>
+            {:else}
+                <div
+                    class="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0"
+                >
+                    <span class="inline-flex rounded-md shadow">
+                        <button
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-rose-600 bg-white hover:bg-gray-50"
+                            on:click={logout}
+                        >
+                            Log out
+                        </button>
+                    </span>
+                </div>
+            {/if}
         </nav>
     </div>
 
@@ -150,12 +184,21 @@
                         >Payment</a
                     >
                 </div>
-                <a
-                    href="/login"
-                    class="block w-full px-5 py-3 text-center font-medium text-rose-600 bg-gray-50 hover:bg-gray-100"
-                >
-                    Log in
-                </a>
+                {#if !$session.user}
+                    <a
+                        href="/login"
+                        class="block w-full px-5 py-3 text-center font-medium text-rose-600 bg-gray-50 hover:bg-gray-100"
+                        on:click={logout}
+                    >
+                        Log in
+                    </a>
+                {:else}
+                    <button
+                        class="block w-full px-5 py-3 text-center font-medium text-rose-600 bg-gray-50 hover:bg-gray-100"
+                    >
+                        Log out
+                    </button>
+                {/if}
             </div>
         </div>
     {/if}
