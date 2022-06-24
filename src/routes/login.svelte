@@ -1,40 +1,40 @@
 <script>
-	import { session } from '$app/stores';
-	import { goto } from '$app/navigation';
-    import { onMount } from 'svelte'
+    import { session } from '$app/stores';
+    import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
 
     onMount(async function () {
-		if ($session.user) {
+        if ($session.user) {
             goto(`/`);
         }
-	});
+    });
 
-	async function login(event) {
-		const form = event.target;
-		const auth = new FormData(form);
-		await fetch('/auth/login.json', {
-			method: 'POST',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				email: auth.get('email'),
-				password: auth.get('password'),
-				remember: auth.get('remember-me') === 'on'
-			})
-		}).then((response) => {
-			response.json().then((data) => {
-				if (!data.error) {
-					$session.user = data.user;
+    async function login(event) {
+        const form = event.target;
+        const auth = new FormData(form);
+        await fetch('/auth/login.json', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: auth.get('email'),
+                password: auth.get('password'),
+                remember: auth.get('remember-me') === 'on'
+            })
+        }).then((response) => {
+            response.json().then((data) => {
+                if (!data.error) {
+                    $session.user = data.user;
                     goto(`/`);
-				} else {
-					// TODO: Handle error in UI
+                } else {
+                    // TODO: Handle error in UI
                     console.log(data.error);
-				}
-			});
-		});
-	}
+                }
+            });
+        });
+    }
 </script>
 
 <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">

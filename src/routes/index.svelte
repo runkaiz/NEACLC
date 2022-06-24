@@ -1,21 +1,21 @@
 <script context="module">
-	export async function load({ fetch }) {
-		const url = `/announcement/get.json`;
-		const res = await fetch(url);
+    export async function load({ fetch }) {
+        const url = `/announcement/get.json`;
+        const res = await fetch(url);
 
-		if (res.ok) {
-			return {
-				props: {
-					announcement: await res.json()
-				}
-			};
-		}
+        if (res.ok) {
+            return {
+                props: {
+                    announcement: await res.json()
+                }
+            };
+        }
 
-		return {
-			status: res.status,
-			error: new Error(`Failed to load ${url}`)
-		};
-	}
+        return {
+            status: res.status,
+            error: new Error(`Failed to load ${url}`)
+        };
+    }
 </script>
 
 <script>
@@ -26,7 +26,7 @@
 
     export let announcement;
     let shouldShowAnnouncement = false;
-    
+
     onMount(async function () {
         if (announcement[0].content.trim() !== '') {
             shouldShowAnnouncement = true;
